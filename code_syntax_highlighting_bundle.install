@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * Install hooks for the code_syntax_highlighting_bundle.
+ * @file
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @throws \Exception
+ */
+function code_syntax_highlighting_bundle_install() {
+  $res = db_query('SELECT settings FROM {wysiwyg}')->fetchCol();
+  $settings = unserialize($res[0]);
+  $settings['buttons']['code_sc'] = ['code_sc_button' => 1];
+  $serial_settings = serialize($settings);
+
+  try {
+    db_update('wysiwyg')
+      ->fields(['settings' => $serial_settings])
+      ->condition('editor', 'ckeditor', '=')
+      ->execute();
+  } catch (Exception $exception) {
+    watchdog('csh', $exception->getMessage());
+  }
+}

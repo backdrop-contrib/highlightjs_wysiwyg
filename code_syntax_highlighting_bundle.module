@@ -1,0 +1,93 @@
+<?php
+
+/**
+ * @file
+ * Contains Drupal hooks for the code_syntax_highlighting_bundle module.
+ */
+
+// Define the node types that can render the HighlightJS content.
+define('CSH_NODE_TYPES', ['page', 'article']);
+
+/**
+ * Implements of hook_shortcode_info().
+ */
+function code_syntax_highlighting_bundle_shortcode_info() {
+  return [
+    'code' => [
+      'title' => t('Insert Code Syntax'),
+      'description' => t('Insert PHP, JS, and HTML code and render via the highlight.js library.'),
+      'process callback' => 'csh_code_callback',
+      'tips callback' => 'csh_code_tips',
+    ],
+  ];
+}
+
+/**
+ * Render the shortcode.
+ *
+ * @param array $attrs
+ * @param null|string $content
+ *
+ * @return string
+ */
+function csh_code_callback($attrs, $content = NULL) {
+  return "<pre><code class=\"{$attrs['lang']}\">{$content}</code></pre>";
+}
+
+/**
+ * Help text displayed on "/filter/tips".
+ *
+ * @return string
+ */
+function csh_code_tips() {
+  return '[code lang="php"]$foo = "bar";[/code]';
+}
+
+/**
+ * Implements hook_filter_info_alter().
+ */
+function code_syntax_highlighting_bundle_filter_info_alter(&$info) {
+  // Dynamically enable the code shortcode for the WYSIWYG filter.
+  $format = filter_format_load('wysiwyg');
+  $filters = filter_list_format($format->format);
+  $filters['shortcode']->settings['code'] = 1;
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function code_syntax_highlighting_bundle_page_alter() {
+  // Add the JS and CSS assets if the page is supposed to have code syntax highlighting.
+  $current_object = menu_get_object();
+  if (in_array($current_object->type, variable_get('csh_enabled_node_types', CSH_NODE_TYPES), TRUE)) {
+    drupal_add_css(drupal_get_path('module', 'code_syntax_highlighting_bundle')
+      . '/libraries/highlightjs/styles/' . variable_get('csh_theme', 'hybrid') . '.css');
+    drupal_add_css(drupal_get_path('module', 'code_syntax_highlighting_bundle')
+      . '/css/csh.css');
+
+    drupal_add_js(drupal_get_path('module', 'code_syntax_highlighting_bundle')
+      . '/libraries/highlightjs/highlight.pack.js');
+    drupal_add_js('jQuery(document).ready(function () { hljs.initHighlightingOnLoad(); });', array(
+      'type' => 'inline',
+      'scope' => 'footer',
+    ));
+  }
+}
+
+/**
+ * Implementation of hook_wysiwyg_plugin().
+ */
+function code_syntax_highlighting_bundle_wysiwyg_plugin($editor, $version) {
+  // Add the code button for the ckeditor.
+  if ($editor === 'ckeditor') {
+    return array(
+      'code_sc' => array(
+        'path' => drupal_get_path('module', 'code_syntax_highlighting_bundle') . '/plugins/code_sc',
+        'buttons' => array(
+          'code_sc_button' => t('Code Shortcode Generator'),
+        ),
+        'load' => TRUE,
+      ),
+    );
+  }
+}

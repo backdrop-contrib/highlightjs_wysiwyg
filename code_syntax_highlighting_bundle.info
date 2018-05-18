@@ -1,0 +1,9 @@
+name = Code Syntax Highlighting Bundle
+description = Adds a shortcode for using HighlightJS in the WYSIWYG editor.
+core = 7.x
+version = 7.x-1.0
+project = code_syntax_highlighting_bundle
+project status url = https://github.com/CuBoulder/code_syntax_highlighting_bundle
+
+dependencies[] = wysiwyg
+dependencies[] = shortcode
