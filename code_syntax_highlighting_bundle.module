@@ -2,11 +2,22 @@
 
 /**
  * @file
- * Contains Drupal hooks for the code_syntax_highlighting_bundle module.
+ * Contains Backdrop hooks for the code_syntax_highlighting_bundle module.
  */
 
 // Define the node types that can render the HighlightJS content.
 define('CSH_NODE_TYPES', ['page', 'article']);
+
+/**
+ * Implements hook_config_info().
+ */
+function code_syntax_highlighting_bundle_config_info() {
+  $prefixes['code_syntax_highlighting_bundle.settings'] = array(
+    'label' => t('Code Syntax Highlighting Bundle Settings'),
+    'group' => t('CK Editor'),
+  );
+  return $prefixes;
+}
 
 /**
  * Implements of hook_shortcode_info().
@@ -49,6 +60,7 @@ function csh_code_tips() {
 function code_syntax_highlighting_bundle_filter_info_alter(&$info) {
   // Dynamically enable the code shortcode for the WYSIWYG filter.
   $format = filter_format_load('wysiwyg');
+  // @todo Fix deprecation notice.
   $filters = filter_list_format($format->format);
   $filters['shortcode']->settings['code'] = 1;
 }
@@ -59,15 +71,16 @@ function code_syntax_highlighting_bundle_filter_info_alter(&$info) {
 function code_syntax_highlighting_bundle_page_alter() {
   // Add the JS and CSS assets if the page is supposed to have code syntax highlighting.
   $current_object = menu_get_object();
-  if (in_array($current_object->type, variable_get('csh_enabled_node_types', CSH_NODE_TYPES), TRUE)) {
-    drupal_add_css(drupal_get_path('module', 'code_syntax_highlighting_bundle')
-      . '/libraries/highlightjs/styles/' . variable_get('csh_theme', 'hybrid') . '.css');
-    drupal_add_css(drupal_get_path('module', 'code_syntax_highlighting_bundle')
+  if (in_array($current_object->type, config_get('code_syntax_highlighting_bundle.settings','csh_enabled_node_types'), TRUE)) {
+    backdrop_add_css(backdrop_get_path('module', 'code_syntax_highlighting_bundle')
+      . '/libraries/highlightjs/styles/' . config_get('code_syntax_highlighting_bundle.settings','csh_theme') . '.css');
+    backdrop_add_css(backdrop_get_path('module', 'code_syntax_highlighting_bundle')
       . '/css/csh.css');
 
-    drupal_add_js(drupal_get_path('module', 'code_syntax_highlighting_bundle')
+    // @todo Update the library and provide instructions to override the custom packaged build.
+    backdrop_add_js(backdrop_get_path('module', 'code_syntax_highlighting_bundle')
       . '/libraries/highlightjs/highlight.pack.js');
-    drupal_add_js('jQuery(document).ready(function () { hljs.initHighlightingOnLoad(); });', array(
+    backdrop_add_js('jQuery(document).ready(function () { hljs.initHighlightingOnLoad(); });', array(
       'type' => 'inline',
       'scope' => 'footer',
     ));
@@ -82,7 +95,7 @@ function code_syntax_highlighting_bundle_wysiwyg_plugin($editor, $version) {
   if ($editor === 'ckeditor') {
     return array(
       'code_sc' => array(
-        'path' => drupal_get_path('module', 'code_syntax_highlighting_bundle') . '/plugins/code_sc',
+        'path' => backdrop_get_path('module', 'code_syntax_highlighting_bundle') . '/plugins/code_sc',
         'buttons' => array(
           'code_sc_button' => t('Code Shortcode Generator'),
         ),
