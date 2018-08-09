@@ -2,7 +2,7 @@
   "_config_name": "code_syntax_highlighting_bundle.settings",
   "csh_enabled_node_types": [
     "page",
-    "article"
+    "post"
   ],
   "csh_theme": "hybrid"
 }
