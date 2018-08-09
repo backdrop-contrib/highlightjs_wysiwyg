@@ -5,6 +5,7 @@
  * http://docs.ckeditor.com/#!/guide/plugin_sdk_sample_1
  */
 CKEDITOR.dialog.add('code_sc_generatorDialog', function (editor) {
+
   return {
     title: 'Code Syntax Highlighting',
     minWidth: 400,

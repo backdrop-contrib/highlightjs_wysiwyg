@@ -5,9 +5,6 @@
  * Contains Backdrop hooks for the code_syntax_highlighting_bundle module.
  */
 
-// Define the node types that can render the HighlightJS content.
-define('CSH_NODE_TYPES', ['page', 'article']);
-
 /**
  * Implements hook_config_info().
  */
@@ -57,18 +54,18 @@ function csh_code_tips() {
 /**
  * Implements hook_filter_info_alter().
  */
-function code_syntax_highlighting_bundle_filter_info_alter(&$info) {
-  // Dynamically enable the code shortcode for the WYSIWYG filter.
-  $format = filter_format_load('wysiwyg');
-  // @todo Fix deprecation notice.
-  $filters = filter_list_format($format->format);
-  $filters['shortcode']->settings['code'] = 1;
-}
+//function code_syntax_highlighting_bundle_filter_info_alter(&$info) {
+//  // Dynamically enable the code shortcode for the WYSIWYG filter.
+//  $format = filter_format_load('wysiwyg');
+//  // @todo Fix deprecation notice.
+//  $filters = filter_list_format($format->format);
+//  $filters['shortcode']->settings['code'] = 1;
+//}
 
 /**
  * Implements hook_page_alter().
  */
-function code_syntax_highlighting_bundle_page_alter() {
+function code_syntax_highlighting_bundle_preprocess_page(&$variables) {
   // Add the JS and CSS assets if the page is supposed to have code syntax highlighting.
   $current_object = menu_get_object();
   if (in_array($current_object->type, config_get('code_syntax_highlighting_bundle.settings','csh_enabled_node_types'), TRUE)) {
@@ -88,7 +85,7 @@ function code_syntax_highlighting_bundle_page_alter() {
 }
 
 /**
- * Implementation of hook_wysiwyg_plugin().
+ * Implements of hook_wysiwyg_plugin().
  */
 function code_syntax_highlighting_bundle_wysiwyg_plugin($editor, $version) {
   // Add the code button for the ckeditor.
@@ -103,4 +100,31 @@ function code_syntax_highlighting_bundle_wysiwyg_plugin($editor, $version) {
       ),
     );
   }
+}
+
+/**
+ * Implements hook_ckeditor_plugins().
+ */
+function code_syntax_highlighting_bundle_ckeditor_plugins() {
+  $plugins['csh'] = array(
+    'path' => backdrop_get_path('module', 'code_syntax_highlighting_bundle') . '/plugins/code_sc',
+    'file' => 'plugin.js',
+    'internal' => FALSE,
+    // 'css' => array(backdrop_get_path('module', 'mymodule') . '/css/myplugin.css'),
+    'enabled callback' => 'csh_plugin_check',
+    'buttons' => array(
+      'CSH' => array(
+        'label' => t('Code Syntax Highlighting'),
+        'image' =>  backdrop_get_path('module', 'code_syntax_highlighting_bundle') . '/plugins/code_sc/images/code_sc_button.png',
+        'image_alternative' =>'{code}',
+        //'dependencies' => array('contextmenu'),
+      ),
+    ),
+  );
+
+  return $plugins;
+}
+
+function csh_plugin_check() {
+  return TRUE;
 }
