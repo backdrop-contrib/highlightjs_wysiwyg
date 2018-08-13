@@ -1,5 +1,5 @@
 {
-  "_config_name": "code_syntax_highlighting_bundle.settings",
+  "_config_name": "highlightjs_wysiwyg.settings",
   "csh_enabled_node_types": [
     "page",
     "post"
