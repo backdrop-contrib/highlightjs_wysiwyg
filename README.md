@@ -9,6 +9,8 @@ Adds a shortcode integration for using Highlight.js in the WYSIWYG editor.
 3. On your text format settings, check "Enable Insert Code Syntax shortcode" under the shortcode settings and "ShortCodes" under the "enabled filters"
 select list.
 4. Add the "{code}" button to "Avaiable Toolbar".
+5. Add the Highlight.js bundled library from [the Highlight.js project bundler](https://highlightjs.org/download/) to a new `/libraries` directory in 
+this module's root folder, e.g `/libraries/highlightjs/`.
 
 ## How To Use In WYSIWYG Editor
 
