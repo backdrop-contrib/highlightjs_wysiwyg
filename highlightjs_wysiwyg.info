@@ -1,11 +1,9 @@
-name = Code Syntax Highlighting Bundle
+name = Hightlight.js WYSIWYG Integration
 description = Adds a shortcode for using HighlightJS in the WYSIWYG editor.
 type = module
 backdrop = 1.x
 package = CK Editor
 version = 7.x-1.0
-project = code_syntax_highlighting_bundle
-project status url = https://github.com/CuBoulder/code_syntax_highlighting_bundle
 
 dependencies[] = ckeditor
 dependencies[] = shortcode

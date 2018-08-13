@@ -9,3 +9,6 @@ tests/behat/behat.local.yml
 vendor*
 bin*
 composer.lock
+
+# Ignore libraries folder so assets aren't bundled with the code.
+libraries/*

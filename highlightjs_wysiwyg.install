@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Install hooks for the code_syntax_highlighting_bundle.
+ * Install hooks for the highlightjs_wysiwyg.
  */
 
 /**
@@ -10,7 +10,7 @@
  *
  * @throws \Exception
  */
-function code_syntax_highlighting_bundle_install() {
+function highlightjs_wysiwyg_install() {
   // @todo Figure out how to automatically enable this filter on install since WYSIWYG module has changed.
 //  $res = db_query('SELECT settings FROM {wysiwyg}')->fetchCol();
 //  $settings = unserialize($res[0]);
