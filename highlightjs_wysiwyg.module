@@ -17,6 +17,40 @@ function highlightjs_wysiwyg_config_info() {
 }
 
 /**
+ * Implements hook_action_info().
+ */
+/**
+ * Implements hook_menu().
+ */
+function highlightjs_wysiwyg_menu() {
+  $items = array();
+
+  $items['admin/config/content/highlightjs_wysiwyg'] = array(
+    'title' => 'Highlight.js WYSIWYG Settings',
+    'description' => 'Configure the highlightjs WYSIWYG integration.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('highlightjs_wysiwyg_admin_settings_form'),
+    'access arguments' => array('administer highlightjs_wysiwyg settings'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'highlightjs_wysiwyg.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function highlightjs_wysiwyg_permission() {
+  return array(
+    'administer highlightjs_wysiwyg settings' => array(
+      'title' => t('Administer highlightjs_wysiwyg Settings'),
+      'description' => t('Perform maintenance tasks for the highlightjs_wysiswyg module.'),
+    ),
+  );
+}
+
+/**
  * Implements of hook_shortcode_info().
  */
 function highlightjs_wysiwyg_shortcode_info() {
@@ -68,7 +102,9 @@ function csh_code_tips() {
 function highlightjs_wysiwyg_preprocess_page(&$variables) {
   // Add the JS and CSS assets if the page is supposed to have code syntax highlighting.
   $current_object = menu_get_object();
-  if (in_array($current_object->type, config_get('highlightjs_wysiwyg.settings','csh_enabled_node_types'), TRUE)) {
+  $csh_node_types = config_get('highlightjs_wysiwyg.settings','csh_enabled_node_types');
+
+  if (in_array($current_object->type, $csh_node_types, TRUE)) {
     backdrop_add_css(backdrop_get_path('module', 'highlightjs_wysiwyg')
       . '/libraries/highlightjs/styles/' . config_get('highlightjs_wysiwyg.settings','csh_theme') . '.css');
     backdrop_add_css(backdrop_get_path('module', 'highlightjs_wysiwyg')
@@ -81,6 +117,25 @@ function highlightjs_wysiwyg_preprocess_page(&$variables) {
       'type' => 'inline',
       'scope' => 'footer',
     ));
+  }
+
+  $path = current_path();
+  if ((strpos($path, 'node/add') !== FALSE
+    || strpos($path, 'node/edit') !== FALSE)
+    && array_filter($csh_node_types, function($val) use ($path) { return strpos($path, $val) !== FALSE;})) {
+    $languages = config_get('highlightjs_wysiwyg.settings', 'languages');
+    if ($languages) {
+      $languages = explode("\r\n", $languages);
+
+      $final_languages = array();
+      foreach ($languages as $language) {
+        $exploded_language = explode('|', $language);
+        $final_languages[] = array($exploded_language[0] => $exploded_language[1]);
+      }
+
+      $foo = 'bar';
+      backdrop_add_js(array('highlightjs_wysiwyg' => array('languages' => $final_languages)), 'setting');
+    }
   }
 }
 
