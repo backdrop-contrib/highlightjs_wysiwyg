@@ -1,8 +1,9 @@
-# code_syntax_highlighting_bundle
+# Highlight JS WYSIWYG
 
 Adds a shortcode integration for using Highlight.js in the WYSIWYG editor.
 
-## How To Install
+Installation
+-------------
 
 1. Enable the bundle like any Backdrop module. 
 2. Add it to the WYSIWYG Editor by choosing a text format under "admin/config/content/formats".
@@ -12,7 +13,8 @@ select list.
 5. Add the Highlight.js bundled library from [the Highlight.js project bundler](https://highlightjs.org/download/) to a new `/libraries` directory in 
 this module's root folder, e.g `/libraries/highlightjs/`.
 
-## How To Use In WYSIWYG Editor
+Documentation
+-------------
 
 When you edit a node using the WYSIWYG text filter, you'll see button with brackets that allows you to enter code syntax.
 
@@ -30,3 +32,25 @@ Once saved, the code is rendered with syntax highlighting. You can change the th
 themes are located at https://highlightjs.org/static/demo/.
 
 <img width="1212" alt="screen shot 2018-05-18 at 2 44 25 pm" src="https://user-images.githubusercontent.com/3640707/40257071-009f761e-5aaa-11e8-96eb-2e959289029c.png">
+
+Issues
+------
+
+Bugs and Feature requests should be reported in the Issue Queue:
+https://github.com/backdrop-contrib/highlightjs_wysiwyg/issues.
+
+Current Maintainers
+-------------------
+
+- Seeking maintainers
+
+Credits
+-------
+
+- Original module maintainer: [Alex Finnarn](https://github.com/alexfinnarn)
+
+License
+-------
+
+This project is GPL v2 software. See the LICENSE.txt file in this directory for
+complete text.
